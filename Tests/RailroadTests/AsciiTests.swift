@@ -185,50 +185,50 @@ final class AsciiTests: XCTestCase {
 
     // drawing error!
     func testOptional() throws {
-//        let diagram = optional(element: terminal(name: "abc"))
-//        let output = draw(diagram)
-//        print(output)
-//        let expected = [
-//            "╭───→───╮",
-//            "│╭─────╮│",
-//            "┴┤ abc ├┴",
-//            " ╰─────╯ ",
-//        ].joined(separator: "\n")
-//        XCTAssertEqual(output, expected)
+        let diagram = optional(element: terminal(name: "abc"))
+        let output = draw(diagram)
+        print(output)
+        let expected = [
+            "╭───→───╮",
+            "│╭─────╮│",
+            "┴┤ abc ├┴",
+            " ╰─────╯ ",
+        ].joined(separator: "\n")
+        XCTAssertEqual(output, expected)
     }
 
     // drawing error!
     func testOptionalChoice() throws {
-//        let diagram = optional(element: choice(elements: [terminal(name: "a"), terminal(name: "b"), terminal(name: "c")], defaultChoice: 1))
-//        let output = draw(diagram)
-//        print(output)
-//        let expected = [
-//            "╭────→────╮",
-//            "│  ╭───╮  │",
-//            "│ ╭┤ a ├╮ │",
-//            "│ │╰───╯│ │",
-//            "│ │╭───╮│ │",
-//            "┴─┼┤ b ├┼─┴",
-//            "  │╰───╯│  ",
-//            "  │╭───╮│  ",
-//            "  ╰┤ c ├╯  ",
-//            "   ╰───╯   "
-//        ].joined(separator: "\n")
-//        XCTAssertEqual(output, expected)
+        let diagram = optional(element: choice(elements: [terminal(name: "a"), terminal(name: "b"), terminal(name: "c")], defaultChoice: 1))
+        let output = draw(diagram)
+        print(output)
+        let expected = [
+            "╭───→───╮",
+            "│ ╭───╮ │",
+            "│╭┤ a ├╮│",
+            "││╰───╯││",
+            "││╭───╮││",
+            "┴┼┤ b ├┼┴",
+            " │╰───╯│ ",
+            " │╭───╮│ ",
+            " ╰┤ c ├╯ ",
+            "  ╰───╯  "
+        ].joined(separator: "\n")
+        XCTAssertEqual(output, expected)
     }
 
     // drawing error!
     func testRepeatElement() throws {
-//        let diagram = repeater(terminal(name: "abc"))
-//        let output = draw(diagram)
-//        print(output)
-//        let expected = [
-//            " ╭─────╮ ",
-//            "┬┤ abc ├┬",
-//            "│╰─────╯│",
-//            "╰───←───╯",
-//        ].joined(separator: "\n")
-//        XCTAssertEqual(output, expected)
+        let diagram = repeater(terminal(name: "abc"))
+        let output = draw(diagram)
+        print(output)
+        let expected = [
+            " ╭─────╮ ",
+            "┬┤ abc ├┬",
+            "│╰─────╯│",
+            "╰───←───╯",
+        ].joined(separator: "\n")
+        XCTAssertEqual(output, expected)
     }
 
     func testRepeatElementWithItem() throws {
