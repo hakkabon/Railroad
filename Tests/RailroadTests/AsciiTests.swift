@@ -1,10 +1,3 @@
-//
-//  AsciiTests.swift
-//
-//
-//  Created by Ulf Akerstedt-Inoue on 2024/03/20.
-//
-
 import XCTest
 @testable import Railroad
 

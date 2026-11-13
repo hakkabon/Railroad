@@ -3,6 +3,7 @@
 //  Railroad
 //
 //  Created by Ulf Akerstedt-Inoue on 2024/03/19.
+//  Copyright © 2024 hakkabon software. All rights reserved.
 //
 
 // Export an image to a PNG file

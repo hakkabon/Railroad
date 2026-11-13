@@ -3,6 +3,7 @@
 //  Railroad
 //
 //  Created by Ulf Akerstedt-Inoue on 2024/03/17.
+//  Copyright © 2024 hakkabon software. All rights reserved.
 //
 
 import Foundation
@@ -413,8 +414,8 @@ public class Element {
  * A box with text. These are the main building blocks of railroad diagrams.
  */
 public final class Box: Element {
-    private let text: String
-    private let style: BoxStyle
+    public let text: String
+    public let style: BoxStyle
     
     private var textSize = CGSize.zero
     private var boxWidth: CGFloat = 0
@@ -526,12 +527,14 @@ public final class Box: Element {
 public final class Series: Element {
     private(set) var elements: [Element]
     
-    public override convenience init() {
-        self.init(elements: [])
+    public override init() {
+        self.elements = []
+        super.init()
     }
     
     public init(elements: [Element]) {
         self.elements = elements
+        super.init()
     }
     
     public func add(_ element: Element) {
@@ -610,12 +613,14 @@ public final class Parallel: Element {
     
     private(set) var elements: [Element]
     
-    public override convenience init() {
-        self.init(elements: [])
+    public override init() {
+        self.elements = []
+        super.init()
     }
     
     public init(elements: [Element]) {
         self.elements = elements
+        super.init()
     }
     
     public func add(_ element: Element) {
@@ -742,8 +747,8 @@ public final class Parallel: Element {
  * bottom one loops back to the top one.
  */
 public final class Loop: Element {
-    private let forward: Element
-    private let backward: Element
+    public let forward: Element
+    public let backward: Element
     
     public init(forward: Element, backward: Element) {
         self.forward = forward
@@ -837,9 +842,9 @@ public final class Skip: Element {
  * A decorative frame that gets drawn around an element.
  */
 public final class Decoration: Element {
-    private let element: Element
-    private let text: String
-    private let style: DecorationStyle
+    public let element: Element
+    public let text: String
+    public let style: DecorationStyle
     
     private var textSize = CGSize.zero
     
@@ -1003,7 +1008,9 @@ extension Diagram {
 #if os(iOS)
         return UIImage(cgImage: cgImage, scale: scale, orientation: .up)
 #else
-        return NSImage(cgImage: cgImage, size: NSZeroSize)
+        let pointWidth = CGFloat(cgImage.width) / scale
+        let pointHeight = CGFloat(cgImage.height) / scale
+        return NSImage(cgImage: cgImage, size: NSSize(width: pointWidth, height: pointHeight))
 #endif
     }
 }
@@ -1025,28 +1032,28 @@ public final class BoxFactory {
     }
 }
 
-private let textStyle: TextStyle = {
+public let textStyle: TextStyle = {
     var textStyle = TextStyle()
     textStyle.font = Font.systemFont(ofSize: 14)
     textStyle.padding = EdgeInsets(top: 4, left: 6, bottom: 6, right: 4)
     return textStyle
 }()
 
-private let terminalStyle: BoxStyle = {
+public let terminalStyle: BoxStyle = {
     var style = BoxStyle()
     style.shape = .roundedSides
     style.textStyle = textStyle
     return style
 }()
 
-private let nonTerminalStyle: BoxStyle = {
+public let nonTerminalStyle: BoxStyle = {
     var style = BoxStyle()
     style.shape = .rectangle
     style.textStyle = textStyle
     return style
 }()
 
-private let commentStyle: BoxStyle = {
+public let commentStyle: BoxStyle = {
     var style = BoxStyle()
     style.shape = .none
     
@@ -1060,7 +1067,7 @@ private let commentStyle: BoxStyle = {
     return style
 }()
 
-private let specialStyle: BoxStyle = {
+public let specialStyle: BoxStyle = {
     var style = BoxStyle()
     style.shape = .pointySides(angle: 30)
     style.textStyle = textStyle
@@ -1069,7 +1076,7 @@ private let specialStyle: BoxStyle = {
     return style
 }()
 
-private let captureStyle: DecorationStyle = {
+public let captureStyle: DecorationStyle = {
     var style = DecorationStyle()
     style.margin = EdgeInsets(top: 0, left: 2, bottom: 0, right: 2)
     style.padding = EdgeInsets(top: 6, left: 2, bottom: 6, right: 2)

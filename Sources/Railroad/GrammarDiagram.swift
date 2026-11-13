@@ -1,6 +1,6 @@
 //
-//  Diagram.swift
-//  GrammarDiagram
+//  GrammarDiagram.swift
+//  Railroad
 //
 //  Created by Ulf Akerstedt-Inoue on 2025/12/29.
 //  Copyright © 2025 hakkabon software. All rights reserved.
@@ -13,8 +13,13 @@ import Foundation
 public typealias Plotter = (Int, Int, String) -> Void
 
 public struct Coord {
-    let x: Int
-    let y: Int
+    public let x: Int
+    public let y: Int
+    
+    public init(x: Int, y: Int) {
+        self.x = x
+        self.y = y
+    }
 }
 
 public protocol DiagramElement {
@@ -27,26 +32,9 @@ public protocol DiagramElement {
     func draw(plotter: Plotter, start: Coord)
 }
 
-public struct Skip: DiagramElement {
-    public let items: [DiagramElement]? = nil
-    let content: String
-    public let up = 0
-    public let down = 0
-    public let height = 0
-    public var width: Int { content.count }
-    
-    public init(_ content: String = "") {
-        self.content = content
-    }
-    
-    public func draw(plotter: Plotter, start: Coord) {
-        drawLine(plotter: plotter, coord: start, text: content)
-    }
-}
-
 // MARK: - Drawing Function
 
-fileprivate struct Point {
+private struct Point {
     let x: Int
     let y: Int
     let char: String
@@ -82,60 +70,112 @@ public func draw(_ element: DiagramElement) -> String {
     return canvas.map { $0.joined() }.joined(separator: "\n")
 }
 
-// MARK: - Factory Functions
+// MARK: - Factory Functions for BNF Grammars
 
-public func terminal(_ name: String) -> DiagramElement {
+public func terminal(_ name: String) -> Terminal {
     return Terminal(name)
 }
 
-public func nonTerminal(_ name: String) -> DiagramElement {
+public func terminal(name: String) -> Terminal {
+    return Terminal(name)
+}
+
+public func nonTerminal(_ name: String) -> NonTerminal {
     return NonTerminal(name)
 }
 
-public func special(_ name: String) -> DiagramElement {
+public func nonTerminal(name: String) -> NonTerminal {
+    return NonTerminal(name)
+}
+
+public func special(_ name: String) -> Special {
     return Special(name)
 }
 
-public func comment(_ comment: String) -> DiagramElement {
+public func special(name: String) -> Special {
+    return Special(name)
+}
+
+public func comment(_ comment: String) -> Comment {
     return Comment(comment)
 }
 
-public func commentWithLine(_ comment: String) -> DiagramElement {
+public func comment(comment: String) -> Comment {
+    return Comment(comment)
+}
+
+public func commentWithLine(_ comment: String) -> CommentWithLine {
     return CommentWithLine(comment)
 }
 
-public func group(_ element: DiagramElement, label: String = "") -> DiagramElement {
+public func commentWithLine(comment: String) -> CommentWithLine {
+    return CommentWithLine(comment)
+}
+
+public func group(_ element: DiagramElement, label: String = "") -> Group {
     return Group(element, label: label)
 }
 
-public func diagram(_ element: DiagramElement, complex: Bool = false) -> DiagramElement {
-    return Diagram(element, complex: complex)
+public func group(element: DiagramElement, label: String = "") -> Group {
+    return Group(element, label: label)
 }
 
-public func sequence(_ elements: [DiagramElement]) -> DiagramElement {
+public func grammarDiagram(_ element: DiagramElement, complex: Bool = false) -> DiagramElement {
+    return AsciiDiagram(element, complex: complex)
+}
+
+public func diagram(_ element: DiagramElement, complex: Bool) -> DiagramElement {
+    return AsciiDiagram(element, complex: complex)
+}
+
+public func sequence(_ elements: [DiagramElement]) -> Sequence {
     return Sequence(elements)
 }
 
-public func skip(_ content: String = "") -> DiagramElement {
-    return Skip(content)
+public func sequence(elements: [DiagramElement]) -> Sequence {
+    return Sequence(elements)
 }
 
-public func optional(_ element: DiagramElement) -> DiagramElement {
-    return Choice([Skip(BoxChars.right), element], defaultChoice: 1)
+public func skip(_ content: String = "") -> AsciiSkip {
+    return AsciiSkip(content)
 }
 
-public func choice(_ elements: [DiagramElement], defaultChoice: Int = 0) -> DiagramElement {
+public func optional(_ element: DiagramElement) -> Choice {
+    return Choice([AsciiSkip(BoxChars.right), element], defaultChoice: 1)
+}
+
+public func optional(element: DiagramElement) -> Choice {
+    return Choice([AsciiSkip(BoxChars.right), element], defaultChoice: 1)
+}
+
+public func choice(_ elements: [DiagramElement], defaultChoice: Int = 0) -> Choice {
     return Choice(elements, defaultChoice: defaultChoice)
 }
 
-public func repeater(_ repeatElement: DiagramElement, inBetween: DiagramElement = Skip()) -> DiagramElement {
-    return Choice([repeatElement, Sequence([inBetween, Skip(BoxChars.left)])])
+public func choice(elements: [DiagramElement], defaultChoice: Int = 0) -> Choice {
+    return Choice(elements, defaultChoice: defaultChoice)
 }
 
-public func stack(_ elements: [DiagramElement]) -> DiagramElement {
+public func repeater(_ repeatElement: DiagramElement, inBetween: DiagramElement = AsciiSkip()) -> Choice {
+    return Choice([repeatElement, Sequence([inBetween, AsciiSkip(BoxChars.left)])])
+}
+
+public func repeater(_ repeatElement: DiagramElement, _ inBetween: DiagramElement) -> Choice {
+    return repeater(repeatElement, inBetween: inBetween)
+}
+
+public func stack(_ elements: [DiagramElement]) -> Stack {
     return Stack(elements)
 }
 
-public func horizontalChoice(_ elements: [DiagramElement]) -> DiagramElement {
+public func stack(elements: [DiagramElement]) -> Stack {
+    return Stack(elements)
+}
+
+public func horizontalChoice(_ elements: [DiagramElement]) -> HorizontalChoice {
+    return HorizontalChoice(elements)
+}
+
+public func horizontalChoice(elements: [DiagramElement]) -> HorizontalChoice {
     return HorizontalChoice(elements)
 }

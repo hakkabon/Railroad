@@ -1,6 +1,6 @@
 //
-//  Diagram.swift
-//  GrammarDiagram
+//  DiagramElements.swift
+//  Railroad
 //
 //  Created by Ulf Akerstedt-Inoue on 2025/12/29.
 //  Copyright © 2025 hakkabon software. All rights reserved.
@@ -10,48 +10,48 @@ import Foundation
 
 // MARK: - Helper Functions
 
-func drawLine(plotter: Plotter, coord: Coord, text: String) {
+public func drawLine(plotter: Plotter, coord: Coord, text: String) {
     for (i, char) in text.enumerated() {
         plotter(coord.x + i, coord.y, String(char))
     }
 }
 
-func delta(_ coord: Coord, xDelta: Int = 0, yDelta: Int = 0) -> Coord {
+public func delta(_ coord: Coord, xDelta: Int = 0, yDelta: Int = 0) -> Coord {
     return Coord(x: coord.x + xDelta, y: coord.y + yDelta)
 }
 
 // MARK: - Box Drawing Characters
 
-struct BoxChars {
-    static let h = "─"
-    static let hu = "┴"
-    static let hd = "┬"
-    static let v = "│"
-    static let vr = "├"
-    static let vl = "┤"
-    static let tl = "╭"
-    static let tr = "╮"
-    static let bl = "╰"
-    static let br = "╯"
-    static let right = "▶︎"
-    static let left = "◀︎"
+public struct BoxChars {
+    public static var h = "─"
+    public static var hu = "┴"
+    public static var hd = "┬"
+    public static var v = "│"
+    public static var vr = "├"
+    public static var vl = "┤"
+    public static var tl = "╭"
+    public static var tr = "╮"
+    public static var bl = "╰"
+    public static var br = "╯"
+    public static var right = "→"
+    public static var left = "←"
 }
 
 // MARK: - Diagram Element Implementations
 
-struct Terminal: DiagramElement {
-    let items: [DiagramElement]? = nil
-    let name: String
-    let up = 1
-    let down = 1
-    let height = 0
-    var width: Int { name.count + 4 }
+public struct Terminal: DiagramElement {
+    public let items: [DiagramElement]? = nil
+    public let name: String
+    public let up = 1
+    public let down = 1
+    public let height = 0
+    public var width: Int { name.count + 4 }
     
-    init(_ name: String) {
+    public init(_ name: String) {
         self.name = name
     }
     
-    func draw(plotter: Plotter, start: Coord) {
+    public func draw(plotter: Plotter, start: Coord) {
         let repeatCount = name.count + 2
         drawLine(plotter: plotter, coord: delta(start, yDelta: -1),
                 text: "╭\(String(repeating: "─", count: repeatCount))╮")
@@ -61,19 +61,19 @@ struct Terminal: DiagramElement {
     }
 }
 
-struct NonTerminal: DiagramElement {
-    let items: [DiagramElement]? = nil
-    let name: String
-    let up = 1
-    let down = 1
-    let height = 0
-    var width: Int { name.count + 4 }
+public struct NonTerminal: DiagramElement {
+    public let items: [DiagramElement]? = nil
+    public let name: String
+    public let up = 1
+    public let down = 1
+    public let height = 0
+    public var width: Int { name.count + 4 }
     
-    init(_ name: String) {
+    public init(_ name: String) {
         self.name = name
     }
     
-    func draw(plotter: Plotter, start: Coord) {
+    public func draw(plotter: Plotter, start: Coord) {
         let repeatCount = name.count + 2
         drawLine(plotter: plotter, coord: delta(start, yDelta: -1),
                 text: "┏\(String(repeating: "━", count: repeatCount))┓")
@@ -83,19 +83,19 @@ struct NonTerminal: DiagramElement {
     }
 }
 
-struct Special: DiagramElement {
-    let items: [DiagramElement]? = nil
-    let name: String
-    let up = 1
-    let down = 1
-    let height = 0
-    var width: Int { name.count + 4 }
+public struct Special: DiagramElement {
+    public let items: [DiagramElement]? = nil
+    public let name: String
+    public let up = 1
+    public let down = 1
+    public let height = 0
+    public var width: Int { name.count + 4 }
     
-    init(_ name: String) {
+    public init(_ name: String) {
         self.name = name
     }
     
-    func draw(plotter: Plotter, start: Coord) {
+    public func draw(plotter: Plotter, start: Coord) {
         let repeatCount = name.count + 2
         drawLine(plotter: plotter, coord: delta(start, yDelta: -1),
                 text: "╭\(String(repeating: "┄", count: repeatCount))╮")
@@ -105,42 +105,59 @@ struct Special: DiagramElement {
     }
 }
 
-struct Comment: DiagramElement {
-    let items: [DiagramElement]? = nil
-    let comment: String
-    let up = 0
-    let down = 0
-    let height = 0
-    var width: Int { comment.count + 2 }
+public struct Comment: DiagramElement {
+    public let items: [DiagramElement]? = nil
+    public let comment: String
+    public let up = 0
+    public let down = 0
+    public let height = 0
+    public var width: Int { comment.count + 2 }
     
-    init(_ comment: String) {
+    public init(_ comment: String) {
         self.comment = comment
     }
     
-    func draw(plotter: Plotter, start: Coord) {
+    public func draw(plotter: Plotter, start: Coord) {
         drawLine(plotter: plotter, coord: start, text: "╴\(comment)╶")
     }
 }
 
-struct CommentWithLine: DiagramElement {
-    let items: [DiagramElement]? = nil
-    let comment: String
-    let up = 1
-    let down = 0
-    let height = 0
-    var width: Int { comment.count + 2 }
+public struct CommentWithLine: DiagramElement {
+    public let items: [DiagramElement]? = nil
+    public let comment: String
+    public let up = 1
+    public let down = 0
+    public let height = 0
+    public var width: Int { comment.count + 2 }
     
-    init(_ comment: String) {
+    public init(_ comment: String) {
         self.comment = comment
     }
     
-    func draw(plotter: Plotter, start: Coord) {
+    public func draw(plotter: Plotter, start: Coord) {
         drawLine(plotter: plotter, coord: delta(start, yDelta: -1), text: " \(comment) ")
         drawLine(plotter: plotter, coord: start, text: String(repeating: "─", count: comment.count + 2))
     }
 }
 
-func alignWidth(plotter: Plotter, element: DiagramElement, coord: Coord, width: Int) {
+public struct AsciiSkip: DiagramElement {
+    public let items: [DiagramElement]? = nil
+    public let content: String
+    public let up = 0
+    public let down = 0
+    public let height = 0
+    public var width: Int { content.count }
+    
+    public init(_ content: String = "") {
+        self.content = content
+    }
+    
+    public func draw(plotter: Plotter, start: Coord) {
+        drawLine(plotter: plotter, coord: start, text: content)
+    }
+}
+
+public func alignWidth(plotter: Plotter, element: DiagramElement, coord: Coord, width: Int) {
     let remainingWidth = width - element.width
     let left = remainingWidth / 2
     let right = remainingWidth - left
@@ -155,16 +172,16 @@ func alignWidth(plotter: Plotter, element: DiagramElement, coord: Coord, width: 
     }
 }
 
-struct Group: DiagramElement {
-    let items: [DiagramElement]? = nil
-    let element: DiagramElement
-    let label: String
-    let up: Int
-    let down: Int
-    let height: Int
-    let width: Int
+public struct Group: DiagramElement {
+    public let items: [DiagramElement]? = nil
+    public let element: DiagramElement
+    public let label: String
+    public let up: Int
+    public let down: Int
+    public let height: Int
+    public let width: Int
     
-    init(_ element: DiagramElement, label: String = "") {
+    public init(_ element: DiagramElement, label: String = "") {
         self.element = element
         self.label = label
         let labelWidth = label.isEmpty ? 0 : label.count + 2
@@ -176,7 +193,7 @@ struct Group: DiagramElement {
         self.width = computedWidth + 2
     }
     
-    func draw(plotter: Plotter, start: Coord) {
+    public func draw(plotter: Plotter, start: Coord) {
         let computedWidth = width - 2
         
         plotter(start.x, start.y - element.up - 1, BoxChars.tl)
@@ -215,16 +232,16 @@ struct Group: DiagramElement {
     }
 }
 
-struct Diagram: DiagramElement {
-    let items: [DiagramElement]? = nil
-    let element: DiagramElement
-    let complex: Bool
-    let up: Int
-    let down: Int
-    let height: Int
-    let width: Int
+public struct AsciiDiagram: DiagramElement {
+    public let items: [DiagramElement]? = nil
+    public let element: DiagramElement
+    public let complex: Bool
+    public let up: Int
+    public let down: Int
+    public let height: Int
+    public let width: Int
     
-    init(_ element: DiagramElement, complex: Bool = false) {
+    public init(_ element: DiagramElement, complex: Bool = false) {
         self.element = element
         self.complex = complex
         self.up = element.up
@@ -233,22 +250,22 @@ struct Diagram: DiagramElement {
         self.width = 2 + element.width
     }
     
-    func draw(plotter: Plotter, start: Coord) {
+    public func draw(plotter: Plotter, start: Coord) {
         plotter(start.x, start.y, complex ? "╟" : "┠")
         plotter(start.x + element.width + 1, start.y + element.height, complex ? "╢" : "┨")
         element.draw(plotter: plotter, start: delta(start, xDelta: 1))
     }
 }
 
-struct Sequence: DiagramElement {
-    let items: [DiagramElement]?
-    let elements: [DiagramElement]
-    let up: Int
-    let down: Int
-    let height = 0
-    let width: Int
+public struct Sequence: DiagramElement {
+    public let items: [DiagramElement]?
+    public let elements: [DiagramElement]
+    public let up: Int
+    public let down: Int
+    public let height = 0
+    public let width: Int
     
-    init(_ elements: [DiagramElement]) {
+    public init(_ elements: [DiagramElement]) {
         self.elements = elements
         self.items = elements
         self.up = elements.map { $0.up }.max() ?? 0
@@ -256,7 +273,7 @@ struct Sequence: DiagramElement {
         self.width = elements.reduce(1) { acc, element in acc + element.width + 1 }
     }
     
-    func draw(plotter: Plotter, start: Coord) {
+    public func draw(plotter: Plotter, start: Coord) {
         plotter(start.x, start.y, BoxChars.h)
         var xDelta = 1
         
@@ -278,16 +295,16 @@ struct Sequence: DiagramElement {
     }
 }
 
-struct Choice: DiagramElement {
-    let items: [DiagramElement]?
-    let elements: [DiagramElement]
-    let defaultChoice: Int
-    let up: Int
-    let down: Int
-    let height: Int
-    let width: Int
+public struct Choice: DiagramElement {
+    public let items: [DiagramElement]?
+    public let elements: [DiagramElement]
+    public let defaultChoice: Int
+    public let up: Int
+    public let down: Int
+    public let height: Int
+    public let width: Int
     
-    init(_ elements: [DiagramElement], defaultChoice: Int = 0) {
+    public init(_ elements: [DiagramElement], defaultChoice: Int = 0) {
         self.elements = elements
         self.items = elements
         self.defaultChoice = defaultChoice
@@ -332,7 +349,7 @@ struct Choice: DiagramElement {
         self.width = computedWidth + 2
     }
     
-    func draw(plotter: Plotter, start: Coord) {
+    public func draw(plotter: Plotter, start: Coord) {
         if elements.count == 1 {
             elements[0].draw(plotter: plotter, start: start)
             return
@@ -385,15 +402,15 @@ struct Choice: DiagramElement {
     }
 }
 
-struct Stack: DiagramElement {
-    let items: [DiagramElement]?
-    let elements: [DiagramElement]
-    let up: Int
-    let down: Int
-    let height: Int
-    let width: Int
+public struct Stack: DiagramElement {
+    public let items: [DiagramElement]?
+    public let elements: [DiagramElement]
+    public let up: Int
+    public let down: Int
+    public let height: Int
+    public let width: Int
     
-    init(_ elements: [DiagramElement]) {
+    public init(_ elements: [DiagramElement]) {
         self.elements = elements
         self.items = elements
         self.up = elements.first?.up ?? 0
@@ -415,7 +432,7 @@ struct Stack: DiagramElement {
         self.width = computedWidth + 2
     }
     
-    func draw(plotter: Plotter, start: Coord) {
+    public func draw(plotter: Plotter, start: Coord) {
         let computedWidth = width - 2
         plotter(start.x, start.y, BoxChars.h)
         var yDelta = -up
@@ -425,7 +442,7 @@ struct Stack: DiagramElement {
                       coord: delta(start, xDelta: 1, yDelta: yDelta + element.up), width: computedWidth)
             
             if i < elements.count - 1 {
-                alignWidth(plotter: plotter, element: Skip(BoxChars.left),
+                alignWidth(plotter: plotter, element: AsciiSkip(BoxChars.left),
                           coord: delta(start, xDelta: 1, yDelta: yDelta + element.up + element.height + element.down + 1),
                           width: computedWidth)
                 plotter(start.x + computedWidth + 1, start.y + element.up + element.height + yDelta, BoxChars.tr)
@@ -452,15 +469,15 @@ struct Stack: DiagramElement {
     }
 }
 
-struct HorizontalChoice: DiagramElement {
-    let items: [DiagramElement]?
-    let elements: [DiagramElement]
-    let up: Int
-    let down: Int
-    let height = 0
-    let width: Int
+public struct HorizontalChoice: DiagramElement {
+    public let items: [DiagramElement]?
+    public let elements: [DiagramElement]
+    public let up: Int
+    public let down: Int
+    public let height = 0
+    public let width: Int
     
-    init(_ elements: [DiagramElement]) {
+    public init(_ elements: [DiagramElement]) {
         self.elements = elements
         self.items = elements
         
@@ -477,7 +494,7 @@ struct HorizontalChoice: DiagramElement {
         self.width = elements.reduce(0) { acc, element in acc + element.width + 2 }
     }
     
-    func draw(plotter: Plotter, start: Coord) {
+    public func draw(plotter: Plotter, start: Coord) {
         if elements.count == 1 {
             elements[0].draw(plotter: plotter, start: start)
             return
